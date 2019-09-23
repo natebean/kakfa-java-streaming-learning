@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - SimpleConsumer",
+            "request": "launch",
+            "mainClass": "com.natebean.SimpleConsumer"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - SimpleProducer",
+            "request": "launch",
+            "mainClass": "com.natebean.SimpleProducer"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Producer",
+            "request": "launch",
+            "mainClass": "main.java.com.natebean.Producer"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Consumer",
+            "request": "launch",
+            "mainClass": "main.java.com.natebean.Consumer"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - App",
+            "request": "launch",
+            "mainClass": "com.natebean.App"
+        }
+    ]
+}
