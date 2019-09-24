@@ -20,7 +20,7 @@ public class SimpleConsumer {
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class );
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "sum-lambda-example-consumer");
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "simple-consumer");
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Collections.singleton(SimpleConsumer.TOPIC_NAME));

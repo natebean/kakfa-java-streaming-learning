@@ -1,0 +1,4 @@
+mvn dependency:resolve
+mvn dependency:list
+mvn compile
+mvn package
