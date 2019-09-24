@@ -21,7 +21,7 @@ public class SimpleProducer {
 
         Random rand = new Random();
 
-        IntStream.range(1, 101).mapToObj(val -> new ProducerRecord<>(SimpleConsumer.TOPIC_NAME, val,
+        IntStream.range(1, 10000 ).mapToObj(val -> new ProducerRecord<>(SimpleConsumer.TOPIC_NAME, val,
                 rand.nextInt(1000))).forEach(producer::send);
 
         producer.flush();
