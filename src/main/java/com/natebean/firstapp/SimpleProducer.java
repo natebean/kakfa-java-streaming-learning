@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.firstapp;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;

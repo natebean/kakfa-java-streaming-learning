@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.firstapp;
 
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;

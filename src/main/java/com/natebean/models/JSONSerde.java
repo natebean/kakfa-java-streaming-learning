@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.models;
 
 import java.io.IOException;
 import java.util.Map;

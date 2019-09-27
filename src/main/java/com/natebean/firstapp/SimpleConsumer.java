@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.firstapp;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

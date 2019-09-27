@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.firstapp;
 
 /**
  * Hello world!
