@@ -2,3 +2,6 @@ mvn dependency:resolve
 mvn dependency:list
 mvn compile
 mvn package
+
+
+kstream doesn't wait for ktable to catch up 

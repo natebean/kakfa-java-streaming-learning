@@ -4,6 +4,7 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import com.natebean.models.GapLog;
+import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
@@ -16,8 +17,11 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -38,11 +42,20 @@ public final class GapProductionLogSplitStream {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        builder.table(ProductionLogProducer.SIMPLE_JSON_TOPIC,
+        KTable<String, ProductionLog> plTable = builder.table(ProductionLogProducer.SIMPLE_JSON_TOPIC,
                 Materialized.<String, ProductionLog, KeyValueStore<Bytes, byte[]>>as(STATE_STORE_NAME));
+        plTable.toStream().print(Printed.toSysOut());
+
+        // GlobalKTable<String, ProductionLog> plTable =
+        // builder.globalTable(ProductionLogProducer.SIMPLE_JSON_TOPIC,
+        // Materialized.<String, ProductionLog, KeyValueStore<Bytes,
+        // byte[]>>as(STATE_STORE_NAME));
+        // plTable.queryableStoreName();
 
         KStream<String, GapLog> gapLogStream = builder.stream(GapLogProducer.SIMPLE_JSON_TOPIC,
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
+
+        gapLogStream.peek((k, v) -> System.out.println("gl: " + k));
 
         gapLogStream.flatTransformValues(() -> new GapProductionLogSplitTransformer(), STATE_STORE_NAME)
                 .to(STREAM_OUTPUT, Produced.with(Serdes.String(), new JSONSerde<GapLogProductionLogSplitRecord>()));

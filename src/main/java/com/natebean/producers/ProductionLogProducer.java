@@ -27,13 +27,13 @@ public class ProductionLogProducer {
 
         final KafkaProducer<String, ProductionLog> producer = new KafkaProducer<>(props);
 
-        Random rand = new Random();
+        // Random rand = new Random();
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
         // final long startinglastEndTime = 946684800; // 1/1/2000
         long lastEndTime = startinglastEndTime;
 
-        for (Integer sidId : IntStream.range(1, 44).toArray()) {
-            for (Integer sysId : IntStream.range(1, rand.nextInt(35)).toArray()) {
+        for (Integer sidId : IntStream.range(1, 2).toArray()) {
+            for (Integer sysId : IntStream.range(1, 2).toArray()) {
                 for (Integer productionId : IntStream.range(1, 1700).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + productionId;
 

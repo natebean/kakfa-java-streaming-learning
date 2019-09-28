@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.natebean.models.GapLog;
+import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 
@@ -35,25 +36,29 @@ public class GapProductionLogSplitTransformer
     }
 
     @Override
-    public Iterable<GapLogProductionLogSplitRecord> transform(GapLog gapLogRecord) {
+    public Iterable<GapLogProductionLogSplitRecord> transform(GapLog gl) {
 
-        String startRange = String.format("%d:%d", gapLogRecord.sidId, gapLogRecord.sysId);
-        String endRange = String.format("%d:%d", gapLogRecord.sidId, gapLogRecord.sysId + 1);
+        String startRange = String.format("%d:%d", gl.sidId, gl.sysId);
+        String endRange = String.format("%d:%d", gl.sidId, gl.sysId + 1);
 
         List<GapLogProductionLogSplitRecord> results = new ArrayList<>();
         JSONSerde<ProductionLog> js = new JSONSerde<>();
 
         KeyValueIterator<String, ValueAndTimestamp<String>> range = kvStore.range(startRange, endRange);
+        System.out.print("*");
         while (range.hasNext()) {
             KeyValue<String, ValueAndTimestamp<String>> productionLogMessage = range.next();
             ValueAndTimestamp<String> plvt = productionLogMessage.value;
             ProductionLog pl = js.deserialize("nop", plvt.value().toString().getBytes());
-            if (gapLogRecord.startTime < pl.endTime && gapLogRecord.endTime > pl.startTime
-                    && gapLogRecord.sidId == pl.sidId && gapLogRecord.sysId == pl.sysId) {
-                results.add(new GapLogProductionLogSplitRecord(gapLogRecord, pl));
+            if (gl.startTime < pl.endTime && gl.endTime > pl.startTime && gl.sidId == pl.sidId
+                    && gl.sysId == pl.sysId) {
+                results.add(new GapLogProductionLogSplitRecord(gl, pl));
+                System.out.print(".");
             }
-
         }
+
+        // TODO handle a miss from range
+
         range.close();
         js.close();
         return results;

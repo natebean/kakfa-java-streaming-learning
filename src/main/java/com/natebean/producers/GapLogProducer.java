@@ -30,11 +30,11 @@ public class GapLogProducer {
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
         long lastEndTime = startinglastEndTime;
 
-        Random rand = new Random();
+        // Random rand = new Random();
 
-        for (Integer sidId : IntStream.range(1, 44).toArray()) {
-            for (Integer sysId : IntStream.range(1, rand.nextInt(35)).toArray()) {
-                for (Integer gapLogId : IntStream.range(1, 1700).toArray()) {
+        for (Integer sidId : IntStream.range(1, 2).toArray()) {
+            for (Integer sysId : IntStream.range(1, 2).toArray()) {
+                for (Integer gapLogId : IntStream.range(1, 1000).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + gapLogId;
 
                     if (gapLogId == 1)
