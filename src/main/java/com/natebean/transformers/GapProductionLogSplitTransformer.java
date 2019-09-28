@@ -28,7 +28,6 @@ public class GapProductionLogSplitTransformer
         // this.context = context;
         kvStore = (ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>>) context
                 .getStateStore(GapProductionLogSplitStream.STATE_STORE_NAME);
-
     }
 
     @Override
