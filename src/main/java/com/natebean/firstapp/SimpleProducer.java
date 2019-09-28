@@ -25,6 +25,7 @@ public class SimpleProducer {
                 rand.nextInt(1000))).forEach(producer::send);
 
         producer.flush();
+        producer.close();
 
     }
 }

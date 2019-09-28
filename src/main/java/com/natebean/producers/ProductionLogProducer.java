@@ -1,16 +1,18 @@
 package com.natebean.producers;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
-
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Properties;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 public class ProductionLogProducer {
 
@@ -26,14 +28,23 @@ public class ProductionLogProducer {
         final KafkaProducer<String, ProductionLog> producer = new KafkaProducer<>(props);
 
         Random rand = new Random();
+        final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+        // final long startinglastEndTime = 946684800; // 1/1/2000
+        long lastEndTime = startinglastEndTime;
 
         for (Integer sidId : IntStream.range(1, 44).toArray()) {
             for (Integer sysId : IntStream.range(1, rand.nextInt(35)).toArray()) {
                 for (Integer productionId : IntStream.range(1, 1700).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + productionId;
 
+                    if (productionId == 1)
+                        lastEndTime = startinglastEndTime;
+
+                    ProductionLog pl = ProductionLogFactory.getNextProductionLogRecord(sidId, sysId, productionId,
+                            lastEndTime);
+                    lastEndTime = pl.endTime;
                     ProducerRecord<String, ProductionLog> record = new ProducerRecord<>(SIMPLE_JSON_TOPIC, keyString,
-                            new ProductionLog(sidId, sysId, productionId));
+                            pl);
                     producer.send(record);
                 }
 

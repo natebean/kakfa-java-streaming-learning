@@ -1,5 +1,9 @@
 package com.natebean.firstapp;
 
+import java.sql.Timestamp;
+import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -14,11 +18,6 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreType;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 
 public final class LookupStringStream {
 

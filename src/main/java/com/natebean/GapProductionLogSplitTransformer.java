@@ -41,14 +41,13 @@ public class GapProductionLogSplitTransformer
         String endRange = String.format("%d:%d", gapLogRecord.sidId, gapLogRecord.sysId + 1);
 
         List<GapLogProductionLogSplitRecord> results = new ArrayList<>();
+        JSONSerde<ProductionLog> js = new JSONSerde<>();
 
         KeyValueIterator<String, ValueAndTimestamp<String>> range = kvStore.range(startRange, endRange);
         while (range.hasNext()) {
             KeyValue<String, ValueAndTimestamp<String>> productionLogMessage = range.next();
             ValueAndTimestamp<String> plvt = productionLogMessage.value;
-            JSONSerde<ProductionLog> js = new JSONSerde<>();
             ProductionLog pl = js.deserialize("nop", plvt.value().toString().getBytes());
-
             if (gapLogRecord.startTime < pl.endTime && gapLogRecord.endTime > pl.startTime
                     && gapLogRecord.sidId == pl.sidId && gapLogRecord.sysId == pl.sysId) {
                 results.add(new GapLogProductionLogSplitRecord(gapLogRecord, pl));
@@ -56,6 +55,7 @@ public class GapProductionLogSplitTransformer
 
         }
         range.close();
+        js.close();
         return results;
     }
 

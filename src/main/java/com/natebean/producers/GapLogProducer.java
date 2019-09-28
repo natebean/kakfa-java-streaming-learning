@@ -5,6 +5,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Properties;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -25,23 +27,29 @@ public class GapLogProducer {
 
         final KafkaProducer<String, GapLog> producer = new KafkaProducer<>(props);
 
+        final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+        long lastEndTime = startinglastEndTime;
+
         Random rand = new Random();
 
         for (Integer sidId : IntStream.range(1, 44).toArray()) {
             for (Integer sysId : IntStream.range(1, rand.nextInt(35)).toArray()) {
-                for (Integer productionId : IntStream.range(1, 1700).toArray()) {
-                    String keyString = sidId + ":" + sysId + ":" + productionId;
+                for (Integer gapLogId : IntStream.range(1, 1700).toArray()) {
+                    String keyString = sidId + ":" + sysId + ":" + gapLogId;
 
-                    ProducerRecord<String, GapLog> record = new ProducerRecord<>(SIMPLE_JSON_TOPIC, keyString,
-                            new GapLog(sidId, sysId, productionId));
+                    if (gapLogId == 1)
+                        lastEndTime = startinglastEndTime;
+
+                    GapLog gl = GapLogFactory.getNextGapLogRecord(sidId, sysId, gapLogId, lastEndTime);
+                    ProducerRecord<String, GapLog> record = new ProducerRecord<>(SIMPLE_JSON_TOPIC, keyString, gl);
+                    lastEndTime = gl.endTime;
                     producer.send(record);
                 }
-
             }
-
         }
 
         producer.flush();
+        producer.close();
 
     }
 }

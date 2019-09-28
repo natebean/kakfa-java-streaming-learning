@@ -38,6 +38,7 @@ public class SimpleStringProducer {
         }
 
         producer.flush();
+        producer.close();
 
     }
 }

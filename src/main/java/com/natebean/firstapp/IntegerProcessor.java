@@ -7,13 +7,13 @@ import org.apache.kafka.streams.state.ValueAndTimestamp;
 
 public class IntegerProcessor implements Processor<Integer, Integer> {
 
-    private ProcessorContext context;
+    // private ProcessorContext context;
     private ReadOnlyKeyValueStore<Integer, ValueAndTimestamp<Integer>> kvStore;
 
     @Override
     @SuppressWarnings("unchecked")
     public void init(ProcessorContext context) {
-        this.context = context;
+        // this.context = context;
         kvStore = (ReadOnlyKeyValueStore<Integer, ValueAndTimestamp<Integer>>) context.getStateStore(FirstStream.STATE_STORE_NAME);
 
     }

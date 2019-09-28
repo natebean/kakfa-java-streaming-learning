@@ -12,13 +12,13 @@ import org.apache.kafka.streams.state.ValueAndTimestamp;
 /*  Not used at this point  9/27/2019 */
 public class GapLogProductionLogProcessor implements Processor<String, GapLog> {
 
-    private ProcessorContext context;
+    // private ProcessorContext context;
     private ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductionLog>> kvStore;
 
     @Override
     @SuppressWarnings("unchecked")
     public void init(ProcessorContext context) {
-        this.context = context;
+        // this.context = context;
         kvStore = (ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductionLog>>) context.getStateStore(GapProductionLogSplitStream.STATE_STORE_NAME);
 
     }
