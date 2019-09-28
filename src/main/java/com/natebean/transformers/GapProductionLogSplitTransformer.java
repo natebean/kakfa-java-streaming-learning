@@ -1,8 +1,9 @@
-package com.natebean;
+package com.natebean.transformers;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.natebean.GapProductionLogSplitStream;
 import com.natebean.models.GapLog;
 import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.JSONSerde;

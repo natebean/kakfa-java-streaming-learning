@@ -9,6 +9,7 @@ import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
+import com.natebean.transformers.GapProductionLogSplitTransformer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -17,7 +18,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
