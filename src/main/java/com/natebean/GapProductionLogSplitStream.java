@@ -46,12 +46,6 @@ public final class GapProductionLogSplitStream {
                 Materialized.<String, ProductionLog, KeyValueStore<Bytes, byte[]>>as(STATE_STORE_NAME));
         plTable.toStream().print(Printed.toSysOut());
 
-        // GlobalKTable<String, ProductionLog> plTable =
-        // builder.globalTable(ProductionLogProducer.SIMPLE_JSON_TOPIC,
-        // Materialized.<String, ProductionLog, KeyValueStore<Bytes,
-        // byte[]>>as(STATE_STORE_NAME));
-        // plTable.queryableStoreName();
-
         KStream<String, GapLog> gapLogStream = builder.stream(GapLogProducer.SIMPLE_JSON_TOPIC,
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
