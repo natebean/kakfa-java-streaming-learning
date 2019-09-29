@@ -1,18 +1,17 @@
 package com.natebean.producers;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Properties;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import com.natebean.models.GapLog;
 import com.natebean.models.JSONSerde;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 public class GapLogProducer {
 
@@ -33,7 +32,7 @@ public class GapLogProducer {
         // Random rand = new Random();
 
         for (Integer sidId : IntStream.range(1, 2).toArray()) {
-            for (Integer sysId : IntStream.range(1, 2).toArray()) {
+            for (Integer sysId : IntStream.range(1, 4).toArray()) {
                 for (Integer gapLogId : IntStream.range(1, 1000).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + gapLogId;
 
