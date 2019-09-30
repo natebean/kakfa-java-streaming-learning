@@ -43,8 +43,6 @@ public final class GapProductionLogSplitStream {
         final Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "gap-production-log-split-stream-global");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
-        // props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        // props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "broker:9092");
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
@@ -59,8 +57,6 @@ public final class GapProductionLogSplitStream {
         KStream<String, GapLog> gapLogStream = builder.stream(GapLogProducer.SIMPLE_JSON_TOPIC,
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        // gapLogStream.peek((k, v) -> System.out.println("gl: " + k));
-
         gapLogStream.flatTransformValues(() -> new GapProductionLogSplitTransformer()).to(STREAM_OUTPUT,
                 Produced.with(Serdes.String(), new JSONSerde<GapLogProductionLogSplitRecord>()));
 
@@ -68,7 +64,7 @@ public final class GapProductionLogSplitStream {
         final CountDownLatch latch = new CountDownLatch(1);
 
         // attach shutdown handler to catch control-c
-        Runtime.getRuntime().addShutdownHook(new Thread("streams-wordcount-shutdown-hook") {
+        Runtime.getRuntime().addShutdownHook(new Thread("streams-threads") {
             @Override
             public void run() {
                 System.out.println("closing stream");
