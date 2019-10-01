@@ -6,6 +6,7 @@ import com.natebean.models.GapLog;
 import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
+import com.natebean.processors.ProductionLogProcessor;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
 import com.natebean.transformers.GapProductionLogSplitTransformer;
@@ -36,7 +37,7 @@ public final class GapProductionLogSplitStream {
 
         final StreamsBuilder builder = new StreamsBuilder();
         createStream(builder);
-        final KafkaStreams streams = new KafkaStreams(builder.build(), getStreamsConfiguration(broker));
+        final KafkaStreams streams = new KafkaStreams(builder.build(), getStreamsConfiguration(broker, true));
         StreamHelpers.startStream(streams);
 
     }
@@ -45,6 +46,10 @@ public final class GapProductionLogSplitStream {
 
         builder.globalTable(ProductionLogProducer.SIMPLE_JSON_TOPIC,
                 Materialized.<String, ProductionLog, KeyValueStore<Bytes, byte[]>>as(STATE_STORE_NAME));
+
+        builder.stream(ProductionLogProducer.SIMPLE_JSON_TOPIC,
+                Consumed.with(Serdes.String(), new JSONSerde<ProductionLog>()))
+                .process(ProductionLogProcessor::new, STATE_STORE_NAME);
 
         KStream<String, GapLog> gapLogStream = builder.stream(GapLogProducer.SIMPLE_JSON_TOPIC,
                 Consumed.with(Serdes.String(), new JSONSerde<GapLog>()));

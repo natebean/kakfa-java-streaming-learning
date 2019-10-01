@@ -33,7 +33,7 @@ public class GapLogProducer {
 
         for (Integer sidId : IntStream.range(1, 2).toArray()) {
             for (Integer sysId : IntStream.range(1, 4).toArray()) {
-                for (Integer gapLogId : IntStream.range(1, 1000).toArray()) {
+                for (Integer gapLogId : IntStream.range(1, 100000).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + gapLogId;
 
                     if (gapLogId == 1)

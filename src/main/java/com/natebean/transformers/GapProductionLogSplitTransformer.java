@@ -59,15 +59,25 @@ public class GapProductionLogSplitTransformer
             }
         }
 
-        // Missed the Production Log Entry
+        boolean needMoreChecking = false;
+
         if (results.size() == 0) {
+            // Missed the Production Log Entry
+            System.out.println("Missing PLog");
             results.add(new GapLogProductionLogSplitRecord(gl, null));
+        } else if (results.size() == 1) {
+            // This is the golden path, 98% of the time
+            needMoreChecking = !results.get(0).completeRecord;
         } else {
+            needMoreChecking = true;
+        }
+
+        if (needMoreChecking) {
+            System.out.println("needMoreChecking");
             // Want to check for gaps in time
             // Update reference results
             if (!capturedAllDurations(results, gl))
                 fillGaps(results, gl);
-
             // TODO handle overlapping entries
         }
 
