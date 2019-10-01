@@ -49,7 +49,6 @@ public class GapProductionLogSplitTransformer
         JSONSerde<ProductionLog> js = new JSONSerde<>();
 
         KeyValueIterator<String, ValueAndTimestamp<String>> range = kvStore.range(startRange, endRange);
-        // System.out.print("*");
         while (range.hasNext()) {
             KeyValue<String, ValueAndTimestamp<String>> productionLogMessage = range.next();
             ValueAndTimestamp<String> plvt = productionLogMessage.value;
@@ -57,15 +56,36 @@ public class GapProductionLogSplitTransformer
             if (gl.startTime < pl.endTime && gl.endTime > pl.startTime && gl.sidId == pl.sidId
                     && gl.sysId == pl.sysId) {
                 results.add(new GapLogProductionLogSplitRecord(gl, pl));
-                // System.out.print(".");
             }
         }
 
-        // TODO handle a miss from range
+        // Missed the Production Log Entry
+        if (results.size() == 0) {
+            results.add(new GapLogProductionLogSplitRecord(gl, null));
+        } else {
+            // Want to check for gaps in time
+            // Update reference results
+            if (!capturedAllDurations(results, gl))
+                fillGaps(results, gl);
+
+            // TODO handle overlapping entries
+        }
 
         range.close();
         js.close();
         return results;
+    }
+
+    public static boolean capturedAllDurations(List<GapLogProductionLogSplitRecord> results, GapLog gl) {
+
+        long capturedDuration = results.stream().map(v -> v.duration).reduce(0L, Long::sum);
+
+        return (capturedDuration == gl.endTime - gl.startTime);
+
+    }
+
+    static void fillGaps(List<GapLogProductionLogSplitRecord> results, GapLog gl) {
+
     }
 
 }
