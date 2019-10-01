@@ -29,6 +29,9 @@ public class GapProductionLogSplitTransformer
         kvStore = (ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>>) context
                 .getStateStore(GapProductionLogSplitStream.STATE_STORE_NAME);
 
+        if (kvStore.approximateNumEntries() == 0) {
+            System.out.println("Store is empty");
+        }
     }
 
     @Override
@@ -46,7 +49,7 @@ public class GapProductionLogSplitTransformer
         JSONSerde<ProductionLog> js = new JSONSerde<>();
 
         KeyValueIterator<String, ValueAndTimestamp<String>> range = kvStore.range(startRange, endRange);
-        System.out.print("*");
+        // System.out.print("*");
         while (range.hasNext()) {
             KeyValue<String, ValueAndTimestamp<String>> productionLogMessage = range.next();
             ValueAndTimestamp<String> plvt = productionLogMessage.value;
@@ -54,7 +57,7 @@ public class GapProductionLogSplitTransformer
             if (gl.startTime < pl.endTime && gl.endTime > pl.startTime && gl.sidId == pl.sidId
                     && gl.sysId == pl.sysId) {
                 results.add(new GapLogProductionLogSplitRecord(gl, pl));
-                System.out.print(".");
+                // System.out.print(".");
             }
         }
 

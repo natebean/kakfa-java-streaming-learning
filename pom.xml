@@ -9,6 +9,20 @@
 
   <name>StreamLearning</name>
 
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -38,6 +52,13 @@
       <version>2.3.0</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/io.confluent/common-utils -->
+    <dependency>
+      <groupId>io.confluent</groupId>
+      <artifactId>common-utils</artifactId>
+      <version>5.2.2</version>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -45,34 +66,62 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-streams-test-utils</artifactId>
+      <version>2.3.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.3.0</version>
+      <classifier>test</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-streams</artifactId>
+      <version>2.3.0</version>
+      <classifier>test</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.13.2</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <descriptors>
-              <descriptor>src/assembly/standalone.xml</descriptor>
-            </descriptors>
-            <archive>
-              <manifest>
-                <mainClass>com.natebean.App</mainClass>
-              </manifest>
-            </archive>
-            <attach>false</attach>
-          </configuration>
-          <executions>
-            <execution>
-              <id>make-assembly</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/standalone.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifest>
+              <mainClass>com.natebean.App</mainClass>
+            </manifest>
+          </archive>
+          <attach>false</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
