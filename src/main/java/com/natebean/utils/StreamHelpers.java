@@ -12,7 +12,7 @@ public class StreamHelpers {
         Runtime.getRuntime().addShutdownHook(new Thread("streams-threads") {
             @Override
             public void run() {
-                System.out.println("closing stream");
+                System.out.println("Closing Stream");
                 streams.close();
                 latch.countDown();
             }
