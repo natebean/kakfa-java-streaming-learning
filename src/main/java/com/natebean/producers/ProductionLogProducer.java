@@ -30,9 +30,9 @@ public class ProductionLogProducer {
         long lastEndTime = startinglastEndTime;
 
         for (Integer sidId : IntStream.range(1, 2).toArray()) {
-            for (Integer sysId : IntStream.range(1, 44).toArray()) {
-                for (Integer productionId : IntStream.range(1, 1700).toArray()) {
-                    String keyString = sidId + ":" + sysId + ":" + productionId;
+            for (Integer sysId : IntStream.range(1, 2).toArray()) {
+                for (Integer productionId : IntStream.range(1, 10).toArray()) {
+                    String keyString = sidId + ":" + sysId + ":" + productionId + ":2";
 
                     if (productionId == 1)
                         lastEndTime = startinglastEndTime;

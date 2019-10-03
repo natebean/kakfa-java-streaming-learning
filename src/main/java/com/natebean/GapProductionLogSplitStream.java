@@ -18,6 +18,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
@@ -43,8 +44,9 @@ public final class GapProductionLogSplitStream {
 
     public static void createStream(StreamsBuilder builder) {
 
-        builder.globalTable(ProductionLogProducer.SIMPLE_JSON_TOPIC,
+       builder.globalTable(ProductionLogProducer.SIMPLE_JSON_TOPIC,
                 Materialized.<String, ProductionLog, KeyValueStore<Bytes, byte[]>>as(STATE_STORE_NAME));
+
 
         KStream<String, GapLog> gapLogStream = builder.stream(GapLogProducer.SIMPLE_JSON_TOPIC,
                 Consumed.with(Serdes.String(), new JSONSerde<GapLog>()));

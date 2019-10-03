@@ -26,8 +26,8 @@ public class TopologyApp {
 
         Topology builder = new Topology();
 
-        StoreBuilder<KeyValueStore<String, ProductionLog>> productionLogStoreSupplier = Stores
-                .keyValueStoreBuilder(Stores.persistentKeyValueStore("productionLogStore"), Serdes.String(),
+        StoreBuilder<KeyValueStore<String, ProductionLog>> plStoreSupplier = Stores
+                .keyValueStoreBuilder(Stores.persistentKeyValueStore("plStore"), Serdes.String(),
                         new JSONSerde<ProductionLog>())
                 .withLoggingDisabled();
 
@@ -44,17 +44,20 @@ public class TopologyApp {
         // .addProcessor("Process", () -> new ProductionLogProcessor("processor"),
         // "ProductionLogSource");
 
-        // builder.addGlobalStore(productionLogStoreSupplier, "productionLog", Serdes.String().deserializer(),
-        //         new JSONSerde<ProductionLog>(), ProductionLogProducer.SIMPLE_JSON_TOPIC, "globalProcessor",
-        //         () -> new ProductionLogProcessor("state"))
+        builder.addGlobalStore(plStoreSupplier, "plStore",
+        Serdes.String().deserializer(),
+        new JSONSerde<ProductionLog>(), ProductionLogProducer.SIMPLE_JSON_TOPIC,
+        "globalProcessor",
+        () -> new ProductionLogProcessor("state"));
 
-        //         .addProcessor("Process02", () -> new ProductionLogProcessor("processor02"), "productionLog");
+        // .addProcessor("Process02", () -> new ProductionLogProcessor("processor02"),
+        // "globalProcessor");
+        builder.addSink("sink", "sink-topic", "globalProcessor");
 
-                builder.addSource("gapLogSource", Serdes.String().deserializer(), new JSONSerde<GapLog>(),
-                        GapLogProducer.SIMPLE_JSON_TOPIC)
+        builder.addSource("gapLogSource", Serdes.String().deserializer(), new JSONSerde<GapLog>(),
+                GapLogProducer.SIMPLE_JSON_TOPIC)
 
-                .addProcessor("Process03", () -> new PrintProcessor<GapLog>("processor03"), "gapLogSource")
-                ;
+                .addProcessor("Process03", () -> new PrintProcessor<GapLog>("processor03", "plStore"), "gapLogSource");
 
         // add the count store associated with the WordCountProcessor processor
         // .addStateStore(countStoreBuilder, "Process")

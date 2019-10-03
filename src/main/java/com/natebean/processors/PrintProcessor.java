@@ -4,30 +4,38 @@ import com.natebean.models.ProductionLog;
 
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.apache.kafka.streams.state.ValueAndTimestamp;
 
 public class PrintProcessor<T> implements Processor<String, T> {
 
     private String prefix;
+    private ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductionLog>> kvStore;
+    private String stateStoreName;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void init(ProcessorContext context) {
-        // TODO Auto-generated method stub
-
+        kvStore = (ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductionLog>>) context
+        .getStateStore(stateStoreName);
     }
 
-    public PrintProcessor(String prefix){
+    public PrintProcessor(String prefix, String stateStoreName){
         this.prefix = prefix;
+        this.stateStoreName = stateStoreName;
     }
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void process(String key, T value) {
-        System.out.println(prefix + ": " + key);
+        // ValueAndTimestamp<ProductionLog> ans = kvStore.get("1:1:1:2");
+
+        // System.out.println(prefix + ": " + key + " -> " + kvStore.approximateNumEntries() + " --> " + (ans == null));
+        System.out.println(prefix + ": " + key + " -> " + kvStore.approximateNumEntries());
 
     }
 
