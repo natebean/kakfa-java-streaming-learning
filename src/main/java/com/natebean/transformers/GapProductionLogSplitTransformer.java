@@ -55,6 +55,7 @@ public class GapProductionLogSplitTransformer
             ProductionLog pl = js.deserialize("nop", plvt.value().toString().getBytes());
             if (gl.startTime < pl.endTime && gl.endTime > pl.startTime && gl.sidId == pl.sidId
                     && gl.sysId == pl.sysId) {
+                        //TODO why do we need to check sidID? and sysId?
                 results.add(new GapLogProductionLogSplitRecord(gl, pl));
             }
         }
@@ -62,11 +63,11 @@ public class GapProductionLogSplitTransformer
         boolean needMoreChecking = false;
 
         if (results.size() == 0) {
-            // Missed the Production Log Entry
+            /* Missed the Production Log Entry */
             System.out.println("Missing PLog");
             results.add(new GapLogProductionLogSplitRecord(gl, null));
         } else if (results.size() == 1) {
-            // This is the golden path, 98% of the time
+            /* This is the golden path, 98% of the time */
             needMoreChecking = !results.get(0).completeRecord;
         } else {
             needMoreChecking = true;
@@ -74,8 +75,6 @@ public class GapProductionLogSplitTransformer
 
         if (needMoreChecking) {
             System.out.println("needMoreChecking");
-            // Want to check for gaps in time
-            // Update reference results
             if (!capturedAllDurations(results, gl))
                 fillGaps(results, gl);
             // TODO handle overlapping entries
@@ -94,7 +93,9 @@ public class GapProductionLogSplitTransformer
 
     }
 
+    /* Make sure results are contiguous and preserve the full duration of the gaplog record */
     static void fillGaps(List<GapLogProductionLogSplitRecord> results, GapLog gl) {
+        //TODO stub
 
     }
 
