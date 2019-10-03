@@ -29,8 +29,6 @@ public class GapLogProducer {
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
         long lastEndTime = startinglastEndTime;
 
-        // Random rand = new Random();
-
         for (Integer sidId : IntStream.range(2, 3).toArray()) {
             for (Integer sysId : IntStream.range(1, 2).toArray()) {
                 for (Integer gapLogId : IntStream.range(1, 100).toArray()) {

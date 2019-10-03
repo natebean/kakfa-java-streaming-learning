@@ -31,7 +31,7 @@ public class ProductionLogProducer {
 
         for (Integer sidId : IntStream.range(1, 2).toArray()) {
             for (Integer sysId : IntStream.range(1, 43).toArray()) {
-                for (Integer productionId : IntStream.range(1, 100000).toArray()) {
+                for (Integer productionId : IntStream.range(1, 10).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + productionId + ":2";
 
                     if (productionId == 1)

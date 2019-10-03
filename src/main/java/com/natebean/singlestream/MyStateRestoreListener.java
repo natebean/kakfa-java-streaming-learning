@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.singlestream;
 
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;
@@ -13,11 +13,12 @@ public class MyStateRestoreListener implements StateRestoreListener {
 
     private KafkaStreams streams;
     private ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState;
+    private StateShare sharedState;
 
     public MyStateRestoreListener(KafkaStreams streams,
-            ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState) {
+            StateShare ss) {
         this.streams = streams;
-        this.globalState = globalState;
+        this.sharedState = ss;
     }
 
 
@@ -42,7 +43,7 @@ public class MyStateRestoreListener implements StateRestoreListener {
         System.out.println("Restored Ended: " + storeName + ":" + totalRestored);
         globalState = streams.store("plStore", QueryableStoreTypes.keyValueStore());
         System.out.println("Global State after Restore " + storeName + ":" + globalState.approximateNumEntries());
-
+        sharedState.setGlobalState(globalState);
 
     }
 

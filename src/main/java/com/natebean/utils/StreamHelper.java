@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.streams.KafkaStreams;
 
-public class StreamHelpers {
+public class StreamHelper {
     public static void startStream(KafkaStreams streams) {
 
         final CountDownLatch latch = new CountDownLatch(1);

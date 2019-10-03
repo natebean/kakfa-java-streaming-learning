@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.singlestream;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -10,7 +10,7 @@ import com.natebean.processors.PrintProcessor;
 import com.natebean.processors.ProductionLogProcessor;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
-import com.natebean.utils.StreamHelpers;
+import com.natebean.utils.StreamHelper;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -33,7 +33,7 @@ public class TopologyApp {
     public static void main(String[] args) {
 
         Topology builder = new Topology();
-        final String broker = StreamHelpers.parseBroker(args);
+        final String broker = StreamHelper.parseBroker(args);
         KafkaProducer<String, ProductionLog> productionLogChangedProducer = getProductionLogProducer();
         createStream(builder, productionLogChangedProducer); // reference parms for objects
         final KafkaStreams streams = new KafkaStreams(builder, getStreamsConfiguration(broker));
@@ -41,16 +41,15 @@ public class TopologyApp {
         System.out.println(builder.describe());
         // StreamHelpers.startStream(streams);
 
-        ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState = null;// = streams.store("plStore", QueryableStoreTypes.keyValueStore());
+        // ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState =
+        // null;// = streams.store("plStore", QueryableStoreTypes.keyValueStore());
+        StateShare sharedState = new StateShare();
 
         // Watching for global state is ready for use
-        streams.setGlobalStateRestoreListener(new MyStateRestoreListener(streams, globalState));
-
+        streams.setGlobalStateRestoreListener(new MyStateRestoreListener(streams, sharedState));
 
         // Watching state of stream
         // streams.setStateListener(new StateStreamListener());
-
-
 
         final CountDownLatch latch = new CountDownLatch(1);
         // attach shutdown handler to catch control-c
@@ -66,7 +65,10 @@ public class TopologyApp {
 
         try {
             System.out.println("Starting");
-            streams.start();
+            streams.start(); // blocking until running state
+            System.out.println("Pass Started");
+            ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState = sharedState.getGlobalState();
+            System.out.println("Main thread: " + globalState.approximateNumEntries());
             latch.await();
         } catch (final Throwable e) {
             e.printStackTrace();
@@ -74,7 +76,6 @@ public class TopologyApp {
         }
         System.exit(0);
     }
-
 
     public static Properties getStreamsConfiguration(String bootstrapServers) {
         final Properties props = new Properties();

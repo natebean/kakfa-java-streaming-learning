@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.singlestream;
 
 import java.util.Properties;
 
@@ -9,7 +9,7 @@ import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
 import com.natebean.transformers.GapProductionLogSplitTransformer;
-import com.natebean.utils.StreamHelpers;
+import com.natebean.utils.StreamHelper;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -18,7 +18,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
@@ -33,12 +32,12 @@ public final class GapProductionLogSplitStream {
 
     public static void main(final String[] args) {
 
-        final String broker = StreamHelpers.parseBroker(args);
+        final String broker = StreamHelper.parseBroker(args);
 
         final StreamsBuilder builder = new StreamsBuilder();
         createStream(builder);
         final KafkaStreams streams = new KafkaStreams(builder.build(), getStreamsConfiguration(broker, true));
-        StreamHelpers.startStream(streams);
+        StreamHelper.startStream(streams);
 
     }
 

@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.singlestream;
 
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.KafkaStreams.StateListener;
