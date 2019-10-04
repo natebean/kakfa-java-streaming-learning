@@ -17,10 +17,10 @@ public class PrintProcessor<T> implements Processor<String, T> {
     @SuppressWarnings("unchecked")
     public void init(ProcessorContext context) {
         kvStore = (ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductionLog>>) context
-        .getStateStore(stateStoreName);
+                .getStateStore(stateStoreName);
     }
 
-    public PrintProcessor(String prefix, String stateStoreName){
+    public PrintProcessor(String prefix, String stateStoreName) {
         this.prefix = prefix;
         this.stateStoreName = stateStoreName;
     }
@@ -32,12 +32,9 @@ public class PrintProcessor<T> implements Processor<String, T> {
 
     @Override
     public void process(String key, T value) {
-        // ValueAndTimestamp<ProductionLog> ans = kvStore.get("1:1:1:2");
 
-        // System.out.println(prefix + ": " + key + " -> " + kvStore.approximateNumEntries() + " --> " + (ans == null));
         System.out.println(prefix + ": " + key + " -> " + kvStore.approximateNumEntries());
 
     }
 
 }
-
