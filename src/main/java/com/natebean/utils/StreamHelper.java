@@ -5,7 +5,10 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.kafka.streams.KafkaStreams;
 
 public class StreamHelper {
-    public static void startStream(KafkaStreams streams) {
+    /*
+     * Note:  Blocking due to lacth.await()
+     */
+    public static void startStreamBlocking(KafkaStreams streams) {
 
         final CountDownLatch latch = new CountDownLatch(1);
         // attach shutdown handler to catch control-c

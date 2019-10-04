@@ -29,7 +29,7 @@ public class GapLogProducer {
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
         long lastEndTime = startinglastEndTime;
 
-        for (Integer sidId : IntStream.range(2, 3).toArray()) {
+        for (Integer sidId : IntStream.range(1, 2).toArray()) {
             for (Integer sysId : IntStream.range(1, 2).toArray()) {
                 for (Integer gapLogId : IntStream.range(1, 100).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + gapLogId;

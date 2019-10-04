@@ -1,4 +1,4 @@
-package com.natebean;
+package com.natebean.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

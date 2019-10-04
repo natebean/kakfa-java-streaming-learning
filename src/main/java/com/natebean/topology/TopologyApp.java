@@ -9,7 +9,7 @@ import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
 import com.natebean.topology.processors.PrintProcessor;
-import com.natebean.topology.processors.ProductionLogProcessor;
+import com.natebean.topology.processors.ProductionLogPrintProcessor;
 import com.natebean.utils.StreamHelper;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -99,7 +99,7 @@ public class TopologyApp {
         // Global state is in it's own Sub-topology and it doesn't appear it can be connected to anything else.
         builder.addGlobalStore(plStoreSupplier, "plStore", Serdes.String().deserializer(),
                 new JSONSerde<ProductionLog>(), ProductionLogProducer.SIMPLE_JSON_TOPIC, "globalProcessor",
-                () -> new ProductionLogProcessor("state", productionLogProducer));
+                () -> new ProductionLogPrintProcessor("state", productionLogProducer));
 
         builder.addSource("gapLogSource", Serdes.String().deserializer(), new JSONSerde<GapLog>(),
                 GapLogProducer.SIMPLE_JSON_TOPIC)

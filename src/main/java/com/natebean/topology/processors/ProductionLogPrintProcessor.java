@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
-public class ProductionLogProcessor implements Processor<String, ProductionLog> {
+public class ProductionLogPrintProcessor implements Processor<String, ProductionLog> {
 
     private String prefix;
     private KafkaProducer<String, ProductionLog> productionLogProducer;
@@ -17,7 +17,7 @@ public class ProductionLogProcessor implements Processor<String, ProductionLog> 
 
     }
 
-    public ProductionLogProcessor(String prefix, KafkaProducer<String, ProductionLog> productionLogProducer) {
+    public ProductionLogPrintProcessor(String prefix, KafkaProducer<String, ProductionLog> productionLogProducer) {
         this.prefix = prefix;
         this.productionLogProducer = productionLogProducer;
     }
