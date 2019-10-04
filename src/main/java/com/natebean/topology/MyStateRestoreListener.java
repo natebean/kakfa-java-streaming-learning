@@ -1,4 +1,4 @@
-package com.natebean.singlestream;
+package com.natebean.topology;
 
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.KafkaStreams;

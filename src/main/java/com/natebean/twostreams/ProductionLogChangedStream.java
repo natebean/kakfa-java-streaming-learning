@@ -2,11 +2,9 @@ package com.natebean.twostreams;
 
 import java.util.Properties;
 
-import com.natebean.models.GapLog;
-import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.JSONSerde;
+import com.natebean.models.ProductionLog;
 import com.natebean.producers.ProductionLogProducer;
-import com.natebean.transformers.GapProductionLogSplitTransformer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -14,7 +12,6 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
 
 import io.confluent.common.utils.TestUtils;
 
@@ -24,11 +21,10 @@ public final class ProductionLogChangedStream{
 
     public static void createStream(StreamsBuilder builder) {
 
-        KStream<String, GapLog> gapLogStream = builder.stream(ProductionLogProducer.SIMPLE_JSON_TOPIC,
-                Consumed.with(Serdes.String(), new JSONSerde<GapLog>()));
+        KStream<String, ProductionLog> stream = builder.stream(ProductionLogProducer.SIMPLE_JSON_TOPIC,
+                Consumed.with(Serdes.String(), new JSONSerde<ProductionLog>()));
 
-        gapLogStream.flatTransformValues(GapProductionLogSplitTransformer::new).to(STREAM_OUTPUT,
-                Produced.with(Serdes.String(), new JSONSerde<GapLogProductionLogSplitRecord>()));
+        // stream.process();
 
     }
 

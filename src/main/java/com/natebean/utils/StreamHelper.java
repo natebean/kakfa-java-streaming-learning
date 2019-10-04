@@ -30,6 +30,18 @@ public class StreamHelper {
 
     }
 
+    public static void cleanUpStream(KafkaStreams streams) {
+        try {
+            streams.cleanUp();
+        } catch (final RuntimeException e) {
+            // https://issues.apache.org/jira/browse/KAFKA-6647 causes exception when
+            // executed in Windows, ignoring it
+            // Logged stacktrace cannot be avoided
+            System.out.println(
+                    "Ignoring exception, test failing in Windows due this exception:" + e.getLocalizedMessage());
+        }
+    }
+
     public static String parseBroker(String[] args) {
         String broker = "localhost:9092";
 

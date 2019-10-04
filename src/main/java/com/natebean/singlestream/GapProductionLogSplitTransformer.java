@@ -1,4 +1,4 @@
-package com.natebean.transformers;
+package com.natebean.singlestream;
 
 import java.util.ArrayList;
 import java.util.List;

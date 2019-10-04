@@ -8,7 +8,6 @@ import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
-import com.natebean.transformers.GapProductionLogSplitTransformer;
 import com.natebean.utils.StreamHelper;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;

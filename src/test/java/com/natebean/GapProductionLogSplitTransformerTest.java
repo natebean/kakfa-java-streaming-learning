@@ -8,7 +8,7 @@ import java.util.List;
 import com.natebean.models.GapLog;
 import com.natebean.models.GapLogProductionLogSplitRecord;
 import com.natebean.models.ProductionLog;
-import com.natebean.transformers.GapProductionLogSplitTransformer;
+import com.natebean.singlestream.GapProductionLogSplitTransformer;
 
 import org.junit.Ignore;
 import org.junit.Test;

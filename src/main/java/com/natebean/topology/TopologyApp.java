@@ -1,4 +1,4 @@
-package com.natebean.singlestream;
+package com.natebean.topology;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -6,10 +6,10 @@ import java.util.concurrent.CountDownLatch;
 import com.natebean.models.GapLog;
 import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
-import com.natebean.processors.PrintProcessor;
-import com.natebean.processors.ProductionLogProcessor;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
+import com.natebean.topology.processors.PrintProcessor;
+import com.natebean.topology.processors.ProductionLogProcessor;
 import com.natebean.utils.StreamHelper;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -34,22 +34,30 @@ public class TopologyApp {
 
         Topology builder = new Topology();
         final String broker = StreamHelper.parseBroker(args);
-        KafkaProducer<String, ProductionLog> productionLogChangedProducer = getProductionLogProducer();
-        createStream(builder, productionLogChangedProducer); // reference parms for objects
-        final KafkaStreams streams = new KafkaStreams(builder, getStreamsConfiguration(broker));
-        // streams.cleanUp(); // delete local state, doesn't work on Windows, known bug
-        System.out.println(builder.describe());
-        // StreamHelpers.startStream(streams);
 
-        // ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState =
-        // null;// = streams.store("plStore", QueryableStoreTypes.keyValueStore());
+        // Creating producer for emit records when global state changes, since you can't connect
+        // to a global sub-topology
+        KafkaProducer<String, ProductionLog> productionLogChangedProducer = getProductionLogProducer();
+
+        createStream(builder, productionLogChangedProducer); // reference parms for objects
+
+        final KafkaStreams streams = new KafkaStreams(builder, getStreamsConfiguration(broker));
+
+        StreamHelper.cleanUpStream(streams);
+
+        //Show topology
+        System.out.println(builder.describe());
+
+        //Used to share state between threads, didn't need it 
         StateShare sharedState = new StateShare();
 
         // Watching for global state is ready for use
+        // Just a test, not needed in this case
         streams.setGlobalStateRestoreListener(new MyStateRestoreListener(streams, sharedState));
 
         // Watching state of stream
-        // streams.setStateListener(new StateStreamListener());
+        // Just a test, not needed in this case
+        streams.setStateListener(new StateStreamListener());
 
         final CountDownLatch latch = new CountDownLatch(1);
         // attach shutdown handler to catch control-c
@@ -67,6 +75,7 @@ public class TopologyApp {
             System.out.println("Starting");
             streams.start(); // blocking until running state
             System.out.println("Pass Started");
+            //Will not get here until global table is backfilled/restored
             ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> globalState = sharedState.getGlobalState();
             System.out.println("Main thread: " + globalState.approximateNumEntries());
             latch.await();
@@ -75,6 +84,28 @@ public class TopologyApp {
             System.exit(1);
         }
         System.exit(0);
+    }
+
+
+    public static void createStream(Topology builder, KafkaProducer<String, ProductionLog> productionLogProducer) {
+
+        // withLoggingDisabled required for global table
+        StoreBuilder<KeyValueStore<String, ProductionLog>> plStoreSupplier = Stores
+                .keyValueStoreBuilder(Stores.persistentKeyValueStore("plStore"), Serdes.String(),
+                        new JSONSerde<ProductionLog>())
+                .withLoggingDisabled();
+
+        // When stream is started the global state is "backfilled"/restored, after than you are responsible for data updates via the "globalProcessor"
+        // Global state is in it's own Sub-topology and it doesn't appear it can be connected to anything else.
+        builder.addGlobalStore(plStoreSupplier, "plStore", Serdes.String().deserializer(),
+                new JSONSerde<ProductionLog>(), ProductionLogProducer.SIMPLE_JSON_TOPIC, "globalProcessor",
+                () -> new ProductionLogProcessor("state", productionLogProducer));
+
+        builder.addSource("gapLogSource", Serdes.String().deserializer(), new JSONSerde<GapLog>(),
+                GapLogProducer.SIMPLE_JSON_TOPIC)
+
+                .addProcessor("Process03", () -> new PrintProcessor<GapLog>("processor03", "plStore"), "gapLogSource");
+
     }
 
     public static Properties getStreamsConfiguration(String bootstrapServers) {
@@ -88,27 +119,6 @@ public class TopologyApp {
         props.put(StreamsConfig.STATE_DIR_CONFIG, TestUtils.tempDirectory().getAbsolutePath());
 
         return props;
-    }
-
-    public static void createStream(Topology builder, KafkaProducer<String, ProductionLog> productionLogProducer) {
-
-        StoreBuilder<KeyValueStore<String, ProductionLog>> plStoreSupplier = Stores
-                .keyValueStoreBuilder(Stores.persistentKeyValueStore("plStore"), Serdes.String(),
-                        new JSONSerde<ProductionLog>())
-                .withLoggingDisabled();
-
-        builder.addGlobalStore(plStoreSupplier, "plStore", Serdes.String().deserializer(),
-                new JSONSerde<ProductionLog>(), ProductionLogProducer.SIMPLE_JSON_TOPIC, "globalProcessor",
-                () -> new ProductionLogProcessor("state", productionLogProducer));
-
-        builder.addSource("gapLogSource", Serdes.String().deserializer(), new JSONSerde<GapLog>(),
-                GapLogProducer.SIMPLE_JSON_TOPIC)
-
-                .addProcessor("Process03", () -> new PrintProcessor<GapLog>("processor03", "plStore"), "gapLogSource");
-
-        // add the count store associated with the WordCountProcessor processor
-        // .addStateStore(countStoreBuilder, "Process")
-
     }
 
     private static KafkaProducer<String, ProductionLog> getProductionLogProducer() {

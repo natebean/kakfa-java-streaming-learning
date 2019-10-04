@@ -1,4 +1,4 @@
-package com.natebean.processors;
+package com.natebean.topology.processors;
 
 import com.natebean.models.ProductionLog;
 
@@ -10,12 +10,10 @@ import org.apache.kafka.streams.processor.ProcessorContext;
 public class ProductionLogProcessor implements Processor<String, ProductionLog> {
 
     private String prefix;
-    private ProcessorContext context;
     private KafkaProducer<String, ProductionLog> productionLogProducer;
 
     @Override
     public void init(ProcessorContext context) {
-        this.context = context;
 
     }
 
