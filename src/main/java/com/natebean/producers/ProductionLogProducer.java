@@ -29,10 +29,10 @@ public class ProductionLogProducer {
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
         long lastEndTime = startinglastEndTime;
 
-        for (Integer sidId : IntStream.range(1, 2).toArray()) {
-            for (Integer sysId : IntStream.range(1, 43).toArray()) {
-                for (Integer productionId : IntStream.range(1, 10).toArray()) {
-                    String keyString = sidId + ":" + sysId + ":" + productionId + ":2";
+        for (Integer sidId : IntStream.range(1, 41).toArray()) {
+            for (Integer sysId : IntStream.range(1, 22).toArray()) {
+                for (Integer productionId : IntStream.range(1, 1361).toArray()) {
+                    String keyString = sidId + ":" + sysId + ":" + productionId;
 
                     if (productionId == 1)
                         lastEndTime = startinglastEndTime;

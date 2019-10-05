@@ -22,14 +22,15 @@ public class GapProductionSplitStreamWithReruns {
         try {
             System.out.println("Main Starting");
             mainStream.start();
-            final KafkaStreams changeLogStream = createChangeStream(broker, mainStream
-                    .store(GapProductionSplitStreamBuilder.STATE_STORE_NAME, QueryableStoreTypes.keyValueStore()));
+
+            // final KafkaStreams changeLogStream = createChangeStream(broker, mainStream
+            //         .store(GapProductionSplitStreamBuilder.STATE_STORE_NAME, QueryableStoreTypes.keyValueStore()));
 
             Runtime.getRuntime().addShutdownHook(new Thread("streams-threads") {
                 @Override
                 public void run() {
                     System.out.println("changeStream Stream Closing");
-                    changeLogStream.close();
+                    // changeLogStream.close();
                     System.out.println("Main Stream Closing");
                     mainStream.close();
                     latch.countDown();
@@ -38,7 +39,7 @@ public class GapProductionSplitStreamWithReruns {
 
             System.out.println("Main Running");
             System.out.println("changeStream Starting");
-            changeLogStream.start();
+            // changeLogStream.start();
             System.out.println("changeStream Running");
             latch.await();
         } catch (final Throwable e) {
@@ -51,8 +52,8 @@ public class GapProductionSplitStreamWithReruns {
 
     public static KafkaStreams createMainStream(String broker) {
 
-        GapProductionSplitStreamBuilder gpsbuilder = new GapProductionSplitStreamBuilder(broker);
-        return gpsbuilder.buildStream();
+        GapProductionSplitStreamBuilder builder = new GapProductionSplitStreamBuilder(broker);
+        return builder.buildStream();
     }
 
     public static KafkaStreams createChangeStream(String broker,

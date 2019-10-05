@@ -8,7 +8,6 @@ import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 import com.natebean.producers.GapLogProducer;
 import com.natebean.producers.ProductionLogProducer;
-import com.natebean.singlestream.GapProductionLogSplitStream;
 import com.natebean.utils.AppStreamBuilder;
 import com.natebean.utils.StreamHelper;
 
@@ -35,7 +34,7 @@ import io.confluent.common.utils.TestUtils;
  *  Creating dummy production log records if needed
  * Requirement: key is sidID:sysID:uniqueID for both sides
  * TODO Deal with gaps in production log data
- * TODO deal with overlapping prdocution log data
+ * TODO deal with overlapping production log data
  * TODO Convert to millisecond epoch 
  */
 public final class GapProductionSplitStreamBuilder implements AppStreamBuilder {
@@ -85,9 +84,10 @@ public final class GapProductionSplitStreamBuilder implements AppStreamBuilder {
 
     public Properties getStreamsConfiguration(String bootstrapServers) {
         final Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "gap-production-log-split-stream");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "gap-production-log-split-stream-4-thread");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+        // props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+        props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 4);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");

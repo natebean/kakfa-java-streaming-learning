@@ -52,8 +52,8 @@ public class GapProductionSplitTransformer
         while (range.hasNext()) {
             KeyValue<String, ValueAndTimestamp<String>> productionLogMessage = range.next();
             //TODO why do we have deserialize?
-            ValueAndTimestamp<String> plvt = productionLogMessage.value;
-            ProductionLog pl = js.deserialize("nop", plvt.value().toString().getBytes());
+            ValueAndTimestamp<String> messageValue = productionLogMessage.value;
+            ProductionLog pl = js.deserialize("nop", messageValue.value().toString().getBytes());
             if (gl.startTime < pl.endTime && gl.endTime > pl.startTime && gl.sidId == pl.sidId
                     && gl.sysId == pl.sysId) {
                         //TODO why do we need to check sidID? and sysId?
@@ -94,9 +94,9 @@ public class GapProductionSplitTransformer
 
     }
 
-    /* Make sure results are contiguous and preserve the full duration of the gaplog record */
+    /* Make sure results are contiguous and preserve the full duration of the gap log record */
     static void fillGaps(List<GapLogProductionLogSplitRecord> results, GapLog gl) {
-        //TODO stub fillGaps 
+        //TODO stub fillGaps and overlapping production log
 
     }
 

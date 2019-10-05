@@ -6,8 +6,6 @@ import com.natebean.models.JSONSerde;
 import com.natebean.models.ProductionLog;
 import com.natebean.producers.ProductionLogProducer;
 import com.natebean.utils.AppStreamBuilder;
-import com.natebean.utils.StreamHelper;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -60,7 +58,7 @@ public final class ProductionLogChangedStreamBuilder implements AppStreamBuilder
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
         return props;
     }
