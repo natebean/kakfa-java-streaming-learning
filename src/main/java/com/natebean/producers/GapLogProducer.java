@@ -1,18 +1,17 @@
 package com.natebean.producers;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Properties;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import com.natebean.models.GapLog;
 import com.natebean.models.JSONSerde;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 public class GapLogProducer {
 
@@ -27,18 +26,16 @@ public class GapLogProducer {
 
         final KafkaProducer<String, GapLog> producer = new KafkaProducer<>(props);
 
-        final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
-        long lastEndTime = startinglastEndTime;
+        final long startingLastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+        long lastEndTime = startingLastEndTime;
 
-        // Random rand = new Random();
-
-        for (Integer sidId : IntStream.range(1, 2).toArray()) {
-            for (Integer sysId : IntStream.range(1, 2).toArray()) {
-                for (Integer gapLogId : IntStream.range(1, 1000).toArray()) {
+        for (Integer sidId : IntStream.range(1, 41).toArray()) {
+            for (Integer sysId : IntStream.range(1, 22).toArray()) {
+                for (Integer gapLogId : IntStream.range(1, 13).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + gapLogId;
 
                     if (gapLogId == 1)
-                        lastEndTime = startinglastEndTime;
+                        lastEndTime = startingLastEndTime;
 
                     GapLog gl = GapLogFactory.getNextGapLogRecord(sidId, sysId, gapLogId, lastEndTime);
                     ProducerRecord<String, GapLog> record = new ProducerRecord<>(SIMPLE_JSON_TOPIC, keyString, gl);

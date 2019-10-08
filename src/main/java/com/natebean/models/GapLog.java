@@ -1,5 +1,7 @@
 package com.natebean.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class GapLog implements JSONSerdeCompatible {
     public int sidId;
     public int sysId;
@@ -17,6 +19,11 @@ public class GapLog implements JSONSerdeCompatible {
         this.gapLogId = gapLogId;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    @JsonIgnore
+    public String getKafkaKey() {
+        return sidId + ":" + sysId + ":" + gapLogId;
 
     }
 }

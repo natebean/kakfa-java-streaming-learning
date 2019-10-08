@@ -44,6 +44,19 @@ public class JSONSerde<T extends JSONSerdeCompatible> implements Serializer<T>, 
         }
     }
 
+    public String toJSONString(final T data){
+        if (data == null) {
+            return null;
+        }
+
+        try {
+            return OBJECT_MAPPER.writeValueAsString(data);
+        } catch (final Exception e) {
+            throw new SerializationException("Error stringifing JSON message", e);
+        }
+
+    }
+
     @Override
     public void close() {
     }

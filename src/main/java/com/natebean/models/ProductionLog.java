@@ -1,5 +1,7 @@
 package com.natebean.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ProductionLog implements JSONSerdeCompatible {
     public int sidId;
     public int sysId;
@@ -17,6 +19,12 @@ public class ProductionLog implements JSONSerdeCompatible {
         this.productionId = productionId;
         this.startTime = startTime;
         this.endTime = endTime;
+
+    }
+
+    @JsonIgnore
+    public String getKafkaKey(){
+        return sidId + ":" + sysId + ":" + productionId;
 
     }
 }

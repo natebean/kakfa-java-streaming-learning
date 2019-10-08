@@ -3,7 +3,6 @@ package com.natebean.producers;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Properties;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import com.natebean.models.JSONSerde;
@@ -27,14 +26,12 @@ public class ProductionLogProducer {
 
         final KafkaProducer<String, ProductionLog> producer = new KafkaProducer<>(props);
 
-        // Random rand = new Random();
         final long startinglastEndTime = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
-        // final long startinglastEndTime = 946684800; // 1/1/2000
         long lastEndTime = startinglastEndTime;
 
-        for (Integer sidId : IntStream.range(1, 2).toArray()) {
-            for (Integer sysId : IntStream.range(1, 2).toArray()) {
-                for (Integer productionId : IntStream.range(1, 1700).toArray()) {
+        for (Integer sidId : IntStream.range(1, 41).toArray()) {
+            for (Integer sysId : IntStream.range(1, 22).toArray()) {
+                for (Integer productionId : IntStream.range(1, 1361).toArray()) {
                     String keyString = sidId + ":" + sysId + ":" + productionId;
 
                     if (productionId == 1)
