@@ -9,7 +9,6 @@ import org.apache.kafka.streams.state.ValueAndTimestamp;
 
 public class ProductionLogChangeProcessor implements Processor<String, ProductionLog> {
 
-    private ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> productionLogGlobalState;
 
     @Override
     public void init(ProcessorContext context) {
@@ -18,7 +17,6 @@ public class ProductionLogChangeProcessor implements Processor<String, Productio
 
     public ProductionLogChangeProcessor(
             ReadOnlyKeyValueStore<String, ValueAndTimestamp<String>> productionLogGlobalState) {
-        this.productionLogGlobalState = productionLogGlobalState;
     }
 
     @Override
